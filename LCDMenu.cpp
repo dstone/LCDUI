@@ -36,19 +36,14 @@ int LCDMenu::start( char *menuItems[], size_t menuLen ) {
 void LCDMenu::printMenu() {
     (*_lcd).clear();
 
-    int height = ROWS;
-    int start = _pos;
-    int cursor = 0;
-    if ( _menuLen <= ROWS ) {
-        height = _menuLen;
-        start = 0;
-        cursor = _pos;
-    }
+    int height = min( _menuLen, ROWS );
+    int start = max( 0, _pos - ROWS + 1 ); // which menu item to show at the top
+    int cursor = _pos - start; // cursor offset from top of screen
 
     for ( int i = 0; i < height; i++ ) {
         put_s( _menuItems[(start+i)%_menuLen], 1, i );
     }
-    put_c( R_ARROW, 0, cursor );
+    put_c( R_ARROW, 0, cursor ); // draw cursor
 }
 
 void LCDMenu::put_s( char *str, int col, int row ) {
