@@ -6,29 +6,24 @@
 
 #include "WProgram.h"
 #include <LiquidCrystal.h>
+#include "Inputs.h"
 
 class LCDMenu {
     public:
-        enum EncoderPort { PIN_D, PIN_B, PIN_C };
-        LCDMenu( LiquidCrystal *lcd, int navPin, int selPin );
-        LCDMenu( LiquidCrystal *lcd, EncoderPort port );
+        LCDMenu( LiquidCrystal *lcd, RotaryEncoder *encoder );
         int start( char *menuItems[], size_t menuLen );
     private:
         LiquidCrystal *_lcd;
-        int _navPin, _selPin;
+        RotaryEncoder *_encoder;
         int _top, _pos;
         char **_menuItems;
         size_t _menuLen;
-        EncoderPort _port;
 
         void printMenu();
         void put_s( char *str, int col, int row );
         void put_c( char c, int col, int row );
         int8_t readInput();
         void updateMenu();
-        int8_t readEncoder();
-        uint8_t readPort();
-        void initPort();
 };
 
 #endif
