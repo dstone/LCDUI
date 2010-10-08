@@ -6,7 +6,7 @@
 
 #include "WProgram.h"
 #include <LiquidCrystal.h>
-#include "Inputs.h"
+#include "InputDevices.h"
 
 class LCDMenu {
     public:

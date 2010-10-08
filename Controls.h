@@ -1,7 +1,7 @@
 #ifndef Controls_h
 #define Controls_h
 #include "WProgram.h"
-#include "Inputs.h"
+#include "InputDevices.h"
 #include <LiquidCrystal.h>
 
 class TimeChooser {

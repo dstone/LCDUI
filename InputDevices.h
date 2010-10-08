@@ -1,5 +1,5 @@
-#ifndef Inputs_h
-#define Inputs_h
+#ifndef InputDevices_h
+#define InputDevices_h
 #include "WProgram.h"
 
 class RotaryEncoder {

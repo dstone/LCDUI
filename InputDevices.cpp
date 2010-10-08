@@ -1,4 +1,4 @@
-#include "Inputs.h"
+#include "InputDevices.h"
 #include "WProgram.h"
 
 RotaryEncoder::RotaryEncoder( EncoderPort port, int buttonPin ) {
