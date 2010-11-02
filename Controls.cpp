@@ -16,9 +16,87 @@ int TimeChooser::getTime() {
     (*_lcd).setCursor(0,1);
     (*_lcd).print( " OK      Cancel" );
     (*_lcd).cursor();
-    while( !(*_encoder).click() );
+    int8_t locs[5][2] = {
+        {1,0},
+        {4,0},
+        {7,0},
+        {1,1},
+        {9,1}
+    };
+    int hours = 0;
+    int minutes = 0;
+    int seconds = 0;
+    int8_t menuSel = 0;
+    for (;;) {
+        menuSel = cursorSelect( locs, 5, menuSel );
+        switch ( menuSel ) {
+            case 0:
+                hours = getInt( "%02d", 59, 0, 0 );
+                break;
+            case 1:
+                minutes = getInt( "%02d", 59, 3, 0 );
+                break;
+            case 2:
+                seconds = getInt( "%02d", 59, 6, 0 );
+                break;
+            case 3:
+                Serial.print( "Hours: " );
+                Serial.println( hours );
+                Serial.print( "minutes: " );
+                Serial.println( minutes );
+                Serial.println( "seconds: " );
+                Serial.println( seconds );
+                Serial.println( hours * 3600 + minutes * 60 + seconds );
+                return hours * 3600 + minutes * 60 + seconds;
+            default:
+                return 0;
 
-    return 30;
+        }
+    }
+}
+
+int8_t TimeChooser::cursorSelect( int8_t locs[][2], int8_t count, int8_t pos ) {
+    (*_lcd).cursor();
+    (*_lcd).blink();
+
+    while ( !(*_encoder).click() ) {
+        (*_lcd).setCursor( locs[pos][0], locs[pos][1] );
+        int8_t reading = (*_encoder).readNav();
+        if ( reading ) {
+            pos += reading;
+            if ( pos < 0 ) {
+                pos = count - 1;
+            } else if ( pos >= count ) {
+                pos = 0;
+            }
+        }
+    }
+
+    (*_lcd).noCursor();
+    (*_lcd).noBlink();
+
+    return pos;
+}
+
+int TimeChooser::getInt( char* pattern, int maxVal, int col, int row ) {
+    (*_lcd).cursor();
+    int num = 0;
+    char buffer[17];
+    while ( !(*_encoder).click() ) {
+        int reading = (*_encoder).readNav();
+        num += reading;
+        if ( num < 0 ) {
+            num = maxVal;
+        } else if ( num > maxVal ) {
+            num = 0;
+        }
+        (*_lcd).setCursor( col, row );
+        sprintf( buffer, pattern, num );
+        (*_lcd).print( buffer );
+        (*_lcd).setCursor( col, row );
+    }
+    (*_lcd).noCursor();
+    return num;
 }
 
 CountdownTimer::CountdownTimer( LiquidCrystal *lcd, RotaryEncoder *encoder ) {
@@ -27,10 +105,9 @@ CountdownTimer::CountdownTimer( LiquidCrystal *lcd, RotaryEncoder *encoder ) {
 }
 
 void CountdownTimer::start( int durationInSeconds ) {
-    duration = durationInSeconds * 1000;
+    duration = ((long)durationInSeconds) * 1000;
     Serial.print( "starting timer, duration " );
     Serial.println( duration );
-    //duration = 120000; // 120 second duration for testing
     (*_lcd).clear();
     startTime = millis();
 

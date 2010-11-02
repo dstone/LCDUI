@@ -11,6 +11,8 @@ class TimeChooser {
     private:
         LiquidCrystal *_lcd;
         RotaryEncoder *_encoder;
+        int8_t cursorSelect( int8_t locs[][2], int8_t count, int8_t pos=0 );
+        int getInt( char* pattern, int maxCal, int col, int row );
 };
 
 class CountdownTimer {
