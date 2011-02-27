@@ -31,6 +31,8 @@ class LCDUI {
 
         int stringMenu( char *menuItems[], size_t menuLen );
 
+        int getTime();
+
     private:
         LiquidCrystal *_lcd;
         RotaryEncoder *_encoder;

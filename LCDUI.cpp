@@ -24,7 +24,7 @@ int LCDUI::getInt( char* pattern, int maxVal, int col, int row, int wrap ) {
         _lcd->setCursor( col, row );
         int len = sprintf( buffer, pattern, num );
         _lcd->print( buffer );
-        _lcd->setCursor( col+len, row );
+        _lcd->setCursor( col+len-1, row );
     }
     _lcd->cursor();
     return num;
@@ -60,7 +60,7 @@ int LCDUI::stringMenu( char *menuItems[], size_t menuLen ) {
     printMenu( menuItems, menuLen, top, pos );
 
     for (;;) {
-        int reading = (*_encoder).readNav();
+        int reading = _encoder->readNav();
         if ( reading ) {
             pos = max( 0, pos + reading );
             pos = min( pos, menuLen-1 );
@@ -70,6 +70,56 @@ int LCDUI::stringMenu( char *menuItems[], size_t menuLen ) {
                 top = min( pos, top );
             }
             printMenu( menuItems, menuLen, top, pos );
+        }
+        if ( _encoder->click() ) {
+            return pos;
+        }
+    }
+}
+
+int LCDUI::getTime() {
+    _lcd->clear();
+    
+    // print time input
+    _lcd->setCursor(0,0);
+    _lcd->print( "00:00:00" );
+
+    // print menu
+    _lcd->setCursor(0,1);
+    _lcd->print( " OK      Cancel" );
+    _lcd->cursor();
+
+    // cursor menu locations
+    int locs[5][2] = {
+        {1,0}, // hours
+        {4,0}, // minutes
+        {7,0}, // seconds
+        {1,1}, // OK
+        {9,1}  // Cancel
+    };
+
+    int hours = 0;
+    int minutes = 0;
+    int seconds = 0;
+    int menuSel = 0;
+    for (;;) {
+        // user selects which field to modify or completion action
+        menuSel = cursorMenu( locs, 5, menuSel );
+        // now get input for appropriate field, or return value or cancel
+        switch ( menuSel ) {
+            case 0:
+                hours = getInt( "%02d", 59, 0, 0 );
+                break;
+            case 1:
+                minutes = getInt( "%02d", 59, 3, 0 );
+                break;
+            case 2:
+                seconds = getInt( "%02d", 59, 6, 0 );
+                break;
+            case 3:
+                return hours * 3600 + minutes * 60 + seconds;
+            default:
+                return 0;
         }
     }
 }
