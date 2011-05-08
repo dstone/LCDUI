@@ -33,6 +33,10 @@ class LCDUI {
 
         int getTime();
 
+        LiquidCrystal* getLcd();
+
+        RotaryEncoder* getEncoder();
+
     private:
         LiquidCrystal *_lcd;
         RotaryEncoder *_encoder;

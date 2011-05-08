@@ -5,6 +5,14 @@ LCDUI::LCDUI( LiquidCrystal *lcd, RotaryEncoder *encoder ) {
     _encoder = encoder;
 }
 
+LiquidCrystal* LCDUI::getLcd() {
+    return _lcd;
+}
+
+RotaryEncoder* LCDUI::getEncoder() {
+    return _encoder;
+}
+
 int LCDUI::getInt( char* pattern, int maxVal, int col, int row, int wrap ) {
     _lcd->cursor();
     int num = 0;
