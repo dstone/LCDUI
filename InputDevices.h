@@ -2,7 +2,21 @@
 #define InputDevices_h
 #include "WProgram.h"
 
-class RotaryEncoder {
+class NavInput {
+    public:
+        //virtual ~NavInput() {}
+        virtual int8_t readNav() {
+            return 0;
+        }
+        virtual int8_t click() {
+            return 0;
+        }
+        virtual int8_t pressed() {
+            return 0;
+        }
+};
+
+class RotaryEncoder : public NavInput {
     public:
         enum EncoderPort { PIN_D, PIN_B, PIN_C };
         RotaryEncoder( EncoderPort port, int buttonPin );
